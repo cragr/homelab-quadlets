@@ -38,8 +38,8 @@ Options:
 
 Manifest tip (GitHub):
   Put a text file in your repo (e.g., container-manifest.txt) with one raw URL per line:
-    https://raw.githubusercontent.com/you/repo/main/quadlets/web.container
-    https://raw.githubusercontent.com/you/repo/main/quadlets/db.container
+    https://raw.githubusercontent.com/you/repo/refs/heads/main/quadlets/web.container
+    https://raw.githubusercontent.com/you/repo/refs/heads/main/quadlets/db.container
 EOF
 }
 

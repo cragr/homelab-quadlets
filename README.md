@@ -78,18 +78,18 @@ Point the installer at a manifest file (one raw URL per line):
 **container-manifest.txt**
 
 ```
-https://raw.githubusercontent.com/<you>/<repo>/main/quadlets/web.container
-https://raw.githubusercontent.com/<you>/<repo>/main/quadlets/db.container
-https://raw.githubusercontent.com/<you>/<repo>/main/quadlets/cache.container
-https://raw.githubusercontent.com/<you>/<repo>/main/quadlets/metrics.container
-https://raw.githubusercontent.com/<you>/<repo>/main/quadlets/other.container
+https://raw.githubusercontent.com/<you>/<repo>/refs/heads/main/quadlets/web.container
+https://raw.githubusercontent.com/<you>/<repo>/refs/heads/main/quadlets/db.container
+https://raw.githubusercontent.com/<you>/<repo>/refs/heads/main/quadlets/cache.container
+https://raw.githubusercontent.com/<you>/<repo>/refs/heads/main/quadlets/metrics.container
+https://raw.githubusercontent.com/<you>/<repo>/refs/heads/main/quadlets/other.container
 ```
 
 Run:
 
 ```bash
 sudo ./install-quadlets.sh \
-  --manifest https://raw.githubusercontent.com/<you>/<repo>/main/container-manifest.txt
+  --manifest https://raw.githubusercontent.com/<you>/<repo>/refs/heads/main/container-manifest.txt
 ```
 
 ---
@@ -110,7 +110,7 @@ Install **all** containers to a custom path:
 
 ```bash
 sudo ./install-quadlets.sh \
-  --manifest https://raw.githubusercontent.com/<you>/<repo>/main/container-manifest.txt \
+  --manifest https://raw.githubusercontent.com/<you>/<repo>/refs/heads/main/container-manifest.txt \
   --install-dir /srv/containers \
   --non-interactive \
   --select "all"
@@ -120,7 +120,7 @@ Install just two specific units:
 
 ```bash
 sudo ./install-quadlets.sh \
-  --manifest https://raw.githubusercontent.com/<you>/<repo>/main/container-manifest.txt \
+  --manifest https://raw.githubusercontent.com/<you>/<repo>/refs/heads/main/container-manifest.txt \
   --non-interactive \
   --select "web.container,db.container"
 ```
