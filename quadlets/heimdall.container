@@ -1,0 +1,12 @@
+[Container]
+ContainerName=heimdall
+Image=lscr.io/linuxserver/heimdall:latest
+Environment=TZ=America/New_York
+PublishPort=8001:80
+Volume={{INSTALL_DIR}}/heimdall/config:/config:Z
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,5 @@
+https://raw.githubusercontent.com/cragr/homelab-quadlets/main/quadlets/guacamole.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/main/quadlets/pwpush.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/main/quadlets/nginx-proxy-manager.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/main/quadlets/heimdall.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/main/quadlets/ddns-updater.container
