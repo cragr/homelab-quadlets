@@ -1,0 +1,12 @@
+[Container]
+Image=docker.io/zoeyvid/npmplus:latest
+PublishPort=443:443
+PublishPort=81:81
+Volume={{INSTALL_DIR}}/npmplus:/data:Z
+Environment=TZ=America/New_York
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
