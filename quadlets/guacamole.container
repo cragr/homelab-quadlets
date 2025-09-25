@@ -3,7 +3,7 @@ ContainerName=guacamole
 Image=docker.io/flcontainers/guacamole:latest
 Environment=EXTENSIONS=auth-totp
 PublishPort=8003:8080
-Volume={{INSTALL_DIR}}/guacamole/config:/config
+Volume={{INSTALL_DIR}}/guacamole/config:/config:Z
 Volume=/etc/localtime:/etc/localtime:ro
 
 [Service]
