@@ -1,0 +1,14 @@
+[Container]
+ContainerName=keycloak
+Image=quay.io/keycloak/keycloak:26.3.5
+Environment=KC_BOOTSTRAP_ADMIN_USERNAME=admin
+Environment=KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+PublishPort={{HOST_PORT}}:8443
+
+Exec=start-dev
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
