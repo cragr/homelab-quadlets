@@ -3,7 +3,7 @@ ContainerName=keycloak
 Image=quay.io/keycloak/keycloak:26.3.5
 Environment=KC_BOOTSTRAP_ADMIN_USERNAME=admin
 Environment=KC_BOOTSTRAP_ADMIN_PASSWORD=admin
-PublishPort={{HOST_PORT}}:8443
+PublishPort={{HOST_PORT}}:8080
 
 Exec=start-dev
 
