@@ -1,6 +1,6 @@
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/guacamole.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/pwpush-ephemeral.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/nginx-proxy-manager.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/nginx-proxy-manager-plus.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/heimdall.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/ddns-updater.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/nginx-proxy-manager-plus.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/nginx-proxy-manager.container
