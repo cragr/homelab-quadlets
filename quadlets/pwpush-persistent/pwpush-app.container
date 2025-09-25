@@ -1,0 +1,13 @@
+[Unit]
+Description=Password Pusher (full app)
+After=pwpush.pod mariadb.service
+
+[Container]
+Image=docker.io/pglombardo/pwpush:latest
+Pod=pwpush.pod
+
+# App connects to MariaDB in same pod (loopback). Update creds to match MariaDB.
+Environment=DATABASE_URL=mysql2://pwpush:changeMe@127.0.0.1:3306/pwpush
+
+# Make the app generate correct absolute links (optional if only using gateway)
+Environment=PWP__OVERRIDE_BASE_URL={{PWP__OVERRIDE_BASE_URL}}

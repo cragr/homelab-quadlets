@@ -1,0 +1,3 @@
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/pwpush-persistent/mariadb.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/pwpush-persistent/pwpush-app.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/pwpush-persistent/pwpush-gateway.container

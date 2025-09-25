@@ -2,6 +2,8 @@
 set -euo pipefail
 
 DEFAULT_INSTALL_DIR="/opt/containers"
+DEFAULT_MANIFEST_URL="https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/container-manifest.txt"
+
 BOLD="$(tput bold 2>/dev/null || true)"
 RESET="$(tput sgr0 2>/dev/null || true)"
 
@@ -14,14 +16,19 @@ usage() {
 ${BOLD}Quadlet Installer${RESET}
 
 Usage:
-  $0 [--manifest <URL_or_path>] [--install-dir <path>] [--non-interactive] [--select "<pat1,pat2,...>"]
+  $0 [--manifest <URL_or_path>] [--install-dir <path>] [--non-interactive] [--select "<pat1,pat2,...>"] [--var KEY=VALUE ...]
 
 Options:
-  --manifest        URL (raw) or local path to a manifest listing .container sources (one per line).
-                    Optional label per line using a pipe: URL|install-name.container
+  --manifest        URL (raw) or local path to a manifest listing .container/.pod sources.
+                    Entries may be separated by newlines OR spaces.
+                    Optional label per entry using a pipe: URL|install-name.container
   --install-dir     Path injected into templates (default: ${DEFAULT_INSTALL_DIR}).
-  --non-interactive Run without prompts. Requires --select (and optionally --install-dir).
+  --non-interactive Run without prompts. Requires --select and any needed --var KEY=VALUE.
   --select          Comma-separated numbers/ranges/filenames (or "all") to install.
+  --var KEY=VALUE   Provide template variable(s) (repeatable). Examples:
+                      --var PWP__OVERRIDE_BASE_URL=https://pwpush.example.com
+                      --var GATEWAY_HOST_PORT=8080
+                      --var APP_HOST_PORT=5100
 EOF
 }
 
@@ -29,13 +36,18 @@ MANIFEST=""
 INSTALL_DIR="${DEFAULT_INSTALL_DIR}"
 NON_INTERACTIVE=0
 SELECT_SPEC=""
+VARS=()  # KEY=VALUE pairs for token injection
 
+# --------- CLI parsing ----------
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --manifest) MANIFEST="${2:-}"; shift 2 ;;
     --install-dir) INSTALL_DIR="${2:-}"; shift 2 ;;
     --non-interactive) NON_INTERACTIVE=1; shift ;;
     --select) SELECT_SPEC="${2:-}"; shift 2 ;;
+    --var)
+      [[ -n "${2:-}" ]] || die "--var requires KEY=VALUE"
+      VARS+=("$2"); shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
   esac
@@ -44,6 +56,13 @@ done
 require_root
 check_systemd
 
+# Default manifest if not provided
+if [[ -z "$MANIFEST" ]]; then
+  MANIFEST="$DEFAULT_MANIFEST_URL"
+  echo "No --manifest provided; using default: $MANIFEST"
+fi
+
+# Pick/install dir
 if [[ $NON_INTERACTIVE -eq 0 ]]; then
   read -rp "Install/data path [${INSTALL_DIR}]: " ans
   [[ -n "${ans}" ]] && INSTALL_DIR="${ans}"
@@ -55,15 +74,14 @@ cleanup() { rm -rf "$WORKDIR"; }
 trap cleanup EXIT
 
 # ----- Gather sources -----
-# We'll build parallel arrays:
-#   SRC_DESC[i]   - human-friendly description (basename or label + origin hint)
-#   SRC_PATH[i]   - resolved local file path (download or local)
-#   SRC_INSTALL[i]- destination basename for /etc/containers/systemd (e.g., heimdall.container)
+# Parallel arrays:
+#   SRC_DESC[i]    - human-friendly description (basename/label + origin)
+#   SRC_PATH[i]    - local temp path (download or local)
+#   SRC_INSTALL[i] - basename to install under /etc/containers/systemd
 SRC_DESC=()
 SRC_PATH=()
 SRC_INSTALL=()
 
-# Helper: trim spaces and strip CRLF
 trim_crlf() { printf '%s' "$1" | tr -d '\r' | xargs; }
 
 if [[ -n "$MANIFEST" ]]; then
@@ -74,64 +92,55 @@ if [[ -n "$MANIFEST" ]]; then
     curl -fsSL "$MANIFEST" -o "$MF" || die "Failed to download manifest."
   else
     [[ -f "$MANIFEST" ]] || die "Manifest not found: $MANIFEST"
-    # Normalize CRLF to LF
     awk '{ sub(/\r$/,""); print }' "$MANIFEST" > "$MF"
   fi
 
+  # Accept space OR newline separated entries; allow optional "|label"
   idx=0
   while IFS= read -r raw; do
     line="$(trim_crlf "${raw%%#*}")"
     [[ -z "$line" ]] && continue
+    for token in $line; do
+      entry="$token"
+      url="${entry}"; label=""
+      if [[ "$entry" == *"|"* ]]; then
+        url="${entry%%|*}"
+        label="$(trim_crlf "${entry#*|}")"
+      fi
+      [[ -z "$url" ]] && continue
 
-    url="${line}"
-    label=""
-    if [[ "$line" == *"|"* ]]; then
-      url="${line%%|*}"
-      label="$(trim_crlf "${line#*|}")"
-    fi
-    [[ -z "$url" ]] && continue
-
-    if [[ "$url" =~ ^https?:// ]]; then
-      base="$(basename "$(trim_crlf "$url")")"
-      [[ -z "$label" ]] && label="$base"
-      # Ensure label ends with .container
-      [[ "$label" != *.container ]] && label="${label}.container"
-
-      idx=$((idx+1))
-      dest="${WORKDIR}/$(printf '%02d' "$idx")_${base}"
-      echo "Fetching ${base} ..."
-      curl -fsSL "$url" -o "$dest" || die "Failed to download $url"
-
-      SRC_PATH+=("$dest")
-      SRC_INSTALL+=("$label")
-      SRC_DESC+=("${label}  (from URL: ${base})")
-    else
-      # Local path in manifest
-      [[ -f "$url" || -f "./$url" ]] || { echo "Warning: missing local file in manifest: $url"; continue; }
-      full="$(readlink -f "${url#./}")"
-      base="$(basename "$full")"
-      [[ -z "$label" ]] && label="$base"
-      [[ "$label" != *.container ]] && label="${label}.container"
-
-      SRC_PATH+=("$full")
-      SRC_INSTALL+=("$label")
-      SRC_DESC+=("${label}  (from local: ${base})")
-    fi
+      if [[ "$url" =~ ^https?:// ]]; then
+        base="$(basename "$(trim_crlf "$url")")"
+        [[ -z "$label" ]] && label="$base"
+        [[ "$label" != *.container && "$label" != *.pod ]] && label="${label}.container"
+        idx=$((idx+1))
+        dest="${WORKDIR}/$(printf '%02d' "$idx")_${base}"
+        echo "Fetching ${base} ..."
+        curl -fsSL "$url" -o "$dest" || die "Failed to download $url"
+        SRC_PATH+=("$dest"); SRC_INSTALL+=("$label"); SRC_DESC+=("${label}  (from URL: ${base})")
+      else
+        [[ -f "$url" || -f "./$url" ]] || { echo "Warning: missing local file in manifest: $url"; continue; }
+        full="$(readlink -f "${url#./}")"
+        base="$(basename "$full")"
+        [[ -z "$label" ]] && label="$base"
+        [[ "$label" != *.container && "$label" != *.pod ]] && label="${label}.container"
+        SRC_PATH+=("$full"); SRC_INSTALL+=("$label"); SRC_DESC+=("${label}  (from local: ${base})")
+      fi
+    done
   done < "$MF"
+
 else
-  # Discover local .container files in current dir
-  mapfile -t localfiles < <(find . -maxdepth 1 -type f -name "*.container" -printf "%f\n" | sort)
-  [[ ${#localfiles[@]} -gt 0 ]] || die "No .container files found in current directory. Use --manifest to pull from GitHub."
+  # Discover local .container/.pod files
+  mapfile -t localfiles < <(find . -maxdepth 1 -type f \( -name "*.container" -o -name "*.pod" \) -printf "%f\n" | sort)
+  [[ ${#localfiles[@]} -gt 0 ]] || die "No .container/.pod files found in current directory. Use --manifest to pull from GitHub."
   for f in "${localfiles[@]}"; do
     full="$(readlink -f "$f")"
     base="$(basename "$full")"
-    SRC_PATH+=("$full")
-    SRC_INSTALL+=("$base")
-    SRC_DESC+=("${base}  (local)")
+    SRC_PATH+=("$full"); SRC_INSTALL+=("$base"); SRC_DESC+=("${base}  (local)")
   done
 fi
 
-[[ ${#SRC_PATH[@]} -gt 0 ]] || die "No valid .container entries found (check manifest formatting)."
+[[ ${#SRC_PATH[@]} -gt 0 ]] || die "No valid entries found (check manifest formatting)."
 
 # ----- Selection -----
 echo
@@ -141,7 +150,6 @@ for ((i=0; i<${#SRC_PATH[@]}; i++)); do
 done
 
 SELECTED_IDX=()
-
 choose_files() {
   local input=""
   if [[ $NON_INTERACTIVE -eq 1 ]]; then
@@ -167,14 +175,13 @@ choose_files() {
     elif [[ "$part" =~ ^[0-9]+$ ]]; then
       idx=$((part-1)); [[ $idx -ge 0 && $idx -lt ${#SRC_PATH[@]} ]] && picked+=("$idx")
     else
-      # filename match against install names
       for ((i=0;i<${#SRC_INSTALL[@]};i++)); do
         if [[ "${SRC_INSTALL[$i]}" == "$part" ]]; then picked+=("$i"); fi
       done
     fi
   done
   [[ ${#picked[@]} -gt 0 ]] || die "Selection matched nothing."
-  # unique indices
+  # unique
   local seen=""; local uniq=()
   for idx in "${picked[@]}"; do [[ ":$seen:" == *":$idx:"* ]] && continue; uniq+=("$idx"); seen="${seen}:$idx"; done
   SELECTED_IDX=("${uniq[@]}")
@@ -188,7 +195,7 @@ STAMP="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="${TARGET_DIR}.bak-${STAMP}"
 mkdir -p "$BACKUP_DIR"
 
-# Create host dirs heuristic
+# ----- Host dir creation (heuristic) -----
 create_host_dirs_from_unit() {
   local unit_file="$1"
   while IFS= read -r line; do
@@ -211,23 +218,84 @@ create_host_dirs_from_unit() {
   done < <(grep -E '^\s*(Volume|Bind(ReadOnly)?)=' "$unit_file" || true)
 }
 
+# ----- Token discovery & prompting -----
+extract_tokens() { grep -Eoh '{{[A-Z0-9_]+}}' "$@" 2>/dev/null | sed -E 's/[{}]//g' | sort -u; }
+
+declare -A TOKVAL
+seed_vars_from_cli() {
+  for kv in "${VARS[@]}"; do
+    key="${kv%%=*}"
+    val="${kv#*=}"
+    [[ -z "$key" || "$key" == "$val" ]] && die "Bad --var format (KEY=VALUE): $kv"
+    TOKVAL["$key"]="$val"
+  done
+}
+
+prompt_for_missing_tokens() {
+  local tokens=("$@")
+  [[ ${#tokens[@]} -eq 0 ]] && return
+
+  for t in "${tokens[@]}"; do
+    [[ -n "${TOKVAL[$t]:-}" ]] && continue
+    if [[ $NON_INTERACTIVE -eq 1 ]]; then
+      die "Missing value for {{$t}} while --non-interactive. Provide --var $t=VALUE"
+    fi
+    # sensible defaults for common tokens
+    default=""
+    case "$t" in
+      PWP__OVERRIDE_BASE_URL) default="https://pwpush.example.com" ;;
+      GATEWAY_HOST_PORT)      default="8080" ;;
+      APP_HOST_PORT)          default="5100" ;;
+      HOST_PORT)              default="8080" ;;
+    esac
+    if [[ -n "$default" ]]; then
+      read -rp "Value for {{$t}} [${default}]: " ans
+      TOKVAL["$t"]="${ans:-$default}"
+    else
+      read -rp "Value for {{$t}}: " ans
+      [[ -z "$ans" ]] && die "No value entered for {{$t}}"
+      TOKVAL["$t"]="$ans"
+    fi
+  done
+}
+
 echo
-echo "Injecting install dir, ensuring host paths exist, and installing to ${TARGET_DIR} ..."
-TMP_UNITS=()
+echo "Injecting variables, ensuring host paths exist, and installing to ${TARGET_DIR} ..."
+
+# 1) Copy selected files to tmp so we can scan tokens first
+TMP_FILES_FOR_TOKEN_SCAN=()
 DEST_BASENAMES=()
 for idx in "${SELECTED_IDX[@]}"; do
   src="${SRC_PATH[$idx]}"
   install_bn="${SRC_INSTALL[$idx]}"
   tmp="${WORKDIR}/${install_bn}.tmp"
   cp "$src" "$tmp"
+  TMP_FILES_FOR_TOKEN_SCAN+=("$tmp")
+  DEST_BASENAMES+=("$install_bn")
+done
 
-  # Replace tokens
-  sed -i \
-    -e "s#{{INSTALL_DIR}}#${INSTALL_DIR//\//\\/}#g" \
-    -e "s#%%INSTALL_DIR%%#${INSTALL_DIR//\//\\/}#g" \
-    "$tmp"
+# 2) Gather tokens and prompt/seed values
+seed_vars_from_cli
+mapfile -t FOUND_TOKENS < <(extract_tokens "${TMP_FILES_FOR_TOKEN_SCAN[@]}")
+prompt_for_missing_tokens "${FOUND_TOKENS[@]}"
 
-  # Ensure host paths exist
+# 3) Replace tokens, mkdirs, install
+TMP_UNITS=()
+for i in "${!TMP_FILES_FOR_TOKEN_SCAN[@]}"; do
+  tmp="${TMP_FILES_FOR_TOKEN_SCAN[$i]}"
+  install_bn="${DEST_BASENAMES[$i]}"
+
+  # Replace INSTALL_DIR first
+  sed -i -e "s#{{INSTALL_DIR}}#${INSTALL_DIR//\//\\/}#g" -e "s#%%INSTALL_DIR%%#${INSTALL_DIR//\//\\/}#g" "$tmp"
+
+  # Replace any arbitrary {{TOKEN}}
+  for key in "${!TOKVAL[@]}"; do
+    val="${TOKVAL[$key]}"
+    esc_val="${val//\//\\/}"
+    sed -i -e "s#{{$key}}#${esc_val}#g" "$tmp"
+  done
+
+  # Create host dirs from processed file
   create_host_dirs_from_unit "$tmp"
 
   dest="${TARGET_DIR}/${install_bn}"
@@ -237,7 +305,6 @@ for idx in "${SELECTED_IDX[@]}"; do
   fi
   install -m 0644 "$tmp" "$dest"
   TMP_UNITS+=("$dest")
-  DEST_BASENAMES+=("$install_bn")
 done
 
 echo
@@ -248,7 +315,14 @@ echo
 echo "Starting, then enabling services ..."
 STARTED=()
 for bn in "${DEST_BASENAMES[@]}"; do
-  svc="${bn%.container}.service"
+  # Correct systemd unit names:
+  #  - *.container -> <name>.service
+  #  - *.pod       -> <name>-pod.service
+  if [[ "$bn" == *.pod ]]; then
+    svc="${bn%.pod}-pod.service"
+  else
+    svc="${bn%.container}.service"
+  fi
 
   if systemctl start "$svc"; then
     STARTED+=("$svc")
@@ -284,5 +358,5 @@ echo
 echo "Manage with:"
 for s in "${STARTED[@]}"; do echo "  systemctl status $s"; done
 echo
-echo "If you edit any .container units, run:  systemctl daemon-reload && systemctl restart <service>"
+echo "If you edit any units, run:  systemctl daemon-reload && systemctl restart <service>"
 echo "Backups of replaced units (if any): ${BACKUP_DIR}"

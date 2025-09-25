@@ -1,7 +1,7 @@
 [Container]
 ContainerName=pwpush
 Image=docker.io/pglombardo/pwpush:latest
-PublishPort=8002:5100
+PublishPort={{HOST_PORT}}:5100
 
 [Service]
 Restart=always

@@ -1,7 +1,7 @@
 [Container]
 ContainerName=ddns-updater
 Image=docker.io/qmcgaw/ddns-updater
-PublishPort=8000:8000/tcp
+PublishPort={{HOST_PORT}}:8000/tcp
 Volume={{INSTALL_DIR}}/ddns-updater/data:/updater/data:Z,U
 
 [Service]
