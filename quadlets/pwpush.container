@@ -1,6 +1,7 @@
 [Container]
 ContainerName=pwpush
 Image=docker.io/pglombardo/pwpush:latest
+Volume={{INSTALL_DIR}}/pwpush/db:/opt/PasswordPusher/db:Z
 PublishPort=8002:5100
 
 [Service]
