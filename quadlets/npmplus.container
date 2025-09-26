@@ -1,5 +1,6 @@
 [Container]
 ContainerName=npmplus
+HostName=npmplus
 Image=docker.io/zoeyvid/npmplus:latest
 PublishPort=443:443
 PublishPort=81:81

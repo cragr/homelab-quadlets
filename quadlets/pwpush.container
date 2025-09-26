@@ -1,5 +1,6 @@
 [Container]
 ContainerName=pwpush
+HostName=pwpush
 Image=docker.io/pglombardo/pwpush:latest
 PublishPort={{HOST_PORT}}:5100
 

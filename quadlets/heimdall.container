@@ -1,5 +1,6 @@
 [Container]
 ContainerName=heimdall
+HostName=heimdall
 Image=lscr.io/linuxserver/heimdall:latest
 Environment=TZ=America/New_York
 PublishPort={{HOST_PORT}}:80

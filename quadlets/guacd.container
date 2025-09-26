@@ -1,5 +1,6 @@
 [Container]
 ContainerName=guacd
+HostName=guacd
 Image=docker.io/guacamole/guacd:latest
 PublishPort=4822:4822
 Volume={{INSTALL_DIR}}/guacd:/etc/guacamole:Z,U
