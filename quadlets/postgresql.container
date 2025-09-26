@@ -1,6 +1,5 @@
 [Container]
-ContainerName=postgres
-HostName=postgres
+ContainerName=postgresql
 Image=quay.io/sclorg/postgresql-16-c10s:latest
 Volume={{INSTALL_DIR}}/postgresql/data:/var/lib/pgsql/data:Z,U
 PublishPort=5432:5432
