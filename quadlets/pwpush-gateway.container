@@ -1,0 +1,10 @@
+[Container]
+ContainerName=pwpush-gateway
+Image=docker.io/pglombardo/pwpush-public-gateway:latest
+PublishPort={{HOST_PORT}}:5100
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

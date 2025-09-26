@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DEFAULT_INSTALL_DIR="/opt/containers"
-DEFAULT_MANIFEST_URL="https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/container-manifest.txt"
+DEFAULT_MANIFEST_URL="https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/container-manifest.txt"
 
 BOLD="$(tput bold 2>/dev/null || true)"
 RESET="$(tput sgr0 2>/dev/null || true)"

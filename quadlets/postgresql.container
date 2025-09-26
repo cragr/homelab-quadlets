@@ -1,7 +1,5 @@
-[Unit]
-Description=PostgreSQL 16 (sclorg) - rootless
-
 [Container]
+ContainerName=postgresql
 Image=quay.io/sclorg/postgresql-16-c10s:latest
 Volume={{INSTALL_DIR}}/postgresql/data:/var/lib/pgsql/data:Z
 PublishPort=5432:5432

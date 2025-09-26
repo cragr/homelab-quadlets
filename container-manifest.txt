@@ -1,8 +1,9 @@
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/guacamole.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/pwpush-ephemeral.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/nginx-proxy-manager-plus.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/heimdall.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/ddns-updater.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/nginx-proxy-manager.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/keycloak.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/main/quadlets/postgresql.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/heimdall.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/postgresql.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/pgadmin.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/ddns-updater.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/npmplus.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/guacamole.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/pwpush.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/pwpush-public-gateway.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/keycloak.container
