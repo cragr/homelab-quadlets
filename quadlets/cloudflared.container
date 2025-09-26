@@ -3,15 +3,11 @@ ContainerName=cloudflared
 Image=docker.io/cloudflare/cloudflared:latest
 Network=appnet
 
-# Mount config & credentials
-Volume={{INSTALL_DIR}}/cloudflared:/etc/cloudflared:Z,U
-
-# Run named tunnel from config
-Args=--no-autoupdate tunnel run --config /etc/cloudflared/config.yaml
+Exec=tunnel run --token INSERT_TOKEN_HERE
 
 [Service]
-RestartSec=2
 Restart=always
+RestartSec=2
 
 [Install]
 WantedBy=default.target
