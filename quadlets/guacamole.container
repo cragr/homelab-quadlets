@@ -1,7 +1,6 @@
 [Container]
 ContainerName=guacamole
-HostName=guacamole
-Image=docker.io/guacamole/guacamole:latest
+Image=docker.io/guacamole/guacamole:1.6.0
 PublishPort={{HOST_PORT}}:8080
 
 # Point Guacamole at the guacd container by name (same default podman network)
@@ -10,12 +9,19 @@ Environment=GUACD_HOSTNAME=guacd
 # Enable TOTP in Guacamole
 Environment=TOTP_ENABLED=true
 
-Environment=POSTGRES_HOST=postgres
-Environment=POSTGRES_DATABASE=guacamole_db
-Environment=POSTGRES_USER=guac_user
-Environment=POSTGRES_PASSWORD=password
+# Enable postgresql
+Environment=POSTGRESQL_ENABLED=true
+
+Environment=POSTGRESQL_HOST=postgresql
+Environment=POSTGRESQL_DATABASE=guacamole_db
+Environment=POSTGRESQL_USERNAME=guacamole_user
+Environment=POSTGRESQL_PASSWORD=password
+Environment=WEBAPP_CONTEXT=ROOT
+Environment=REMOTE_IP_VALVE_ENABLED=true
 
 Volume={{INSTALL_DIR}}/guacamole:/etc/guacamole:Z,U
+
+Network=appnet
 
 [Service]
 Restart=always
