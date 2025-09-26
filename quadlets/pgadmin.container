@@ -3,7 +3,7 @@ ContainerName=pgadmin
 Image=docker.io/dpage/pgadmin4:latest
 Volume={{INSTALL_DIR}}/pgadmin/data:/var/lib/pgadmin:Z,U
 
-Environment=PGADMIN_DEFAULT_EMAIL=admin
+Environment=PGADMIN_DEFAULT_EMAIL=admin@example.com
 Environment=PGADMIN_DEFAULT_PASSWORD=password
 Environment=PGADMIN_DISABLE_POSTFIX=true
 
