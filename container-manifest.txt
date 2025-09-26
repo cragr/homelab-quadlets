@@ -3,9 +3,10 @@ https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/postgresql.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/pgadmin.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/ddns-updater.container
+https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/cloudflared.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/guacd.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/guacamole.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/pwpush.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/pwpush-gateway.container
 https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/keycloak.container
-https://raw.githubusercontent.com/cragr/homelab-quadlets/refs/heads/dev/quadlets/cloudflared.container
+
