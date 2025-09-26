@@ -13,7 +13,6 @@ HealthCmd=["CMD-SHELL","pg_isready"]
 HealthInterval=10s
 HealthTimeout=5s
 HealthRetries=5
-HealthStartPeriod=20s
 
 [Service]
 TimeoutStartSec=180
