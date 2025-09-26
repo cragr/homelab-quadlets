@@ -1,0 +1,11 @@
+[Container]
+ContainerName=guacd
+Image=docker.io/guacamole/guacd:latest
+PublishPort=4822:4822
+Volume={{INSTALL_DIR}}/guacd:/etc/guacamole:Z,U
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

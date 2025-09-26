@@ -1,10 +1,20 @@
 [Container]
 ContainerName=guacamole
-Image=docker.io/flcontainers/guacamole:latest
-Environment=EXTENSIONS=auth-totp
-PublishPort={{HOST_PORT}}:8080
-Volume={{INSTALL_DIR}}/guacamole/config:/config:Z,U
-Volume=/etc/localtime:/etc/localtime:ro
+Image=guacamole/guacamole:latest
+PublishPort=8080:8080
+
+# Point Guacamole at the guacd container by name (same default podman network)
+Environment=GUACD_HOSTNAME=guacd
+
+# Enable TOTP in Guacamole
+Environment=TOTP_ENABLED=true
+
+Environment=POSTGRES_HOST=postgres
+Environment=POSTGRES_DATABASE=guacamole_db
+Environment=POSTGRES_USER=guac_user
+Environment=POSTGRES_PASSWORD=password
+
+Volume={{INSTALL_DIR}}/guacamole:/etc/guacamole:Z,U
 
 [Service]
 Restart=always
