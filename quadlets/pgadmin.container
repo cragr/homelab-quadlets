@@ -9,10 +9,9 @@ Environment=PGADMIN_LISTEN_PORT=5050
 
 PublishPort={{HOST_PORT}}:5050
 
-Restart=always
-
 [Service]
 TimeoutStartSec=120
+Restart=always
 
 [Install]
 WantedBy=default.target

@@ -3,7 +3,6 @@ ContainerName=postgres
 Image=quay.io/sclorg/postgresql-16-c10s:latest
 Volume={{INSTALL_DIR}}/postgresql/data:/var/lib/pgsql/data:Z,U
 PublishPort=5432:5432
-RestartPolicy=always
 
 Environment=POSTGRESQL_USER=postgres
 Environment=POSTGRESQL_PASSWORD=postgres
@@ -17,6 +16,7 @@ HealthRetries=5
 
 [Service]
 TimeoutStartSec=180
+Restart=always
 
 [Install]
 WantedBy=default.target
