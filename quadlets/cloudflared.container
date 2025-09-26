@@ -3,7 +3,7 @@ ContainerName=cloudflared
 Image=docker.io/cloudflare/cloudflared:latest
 Network=appnet
 
-Exec=tunnel run --token INSERT_TOKEN_HERE
+Exec=tunnel run --token {{TUNNEL_TOKEN}}
 
 [Service]
 Restart=always
