@@ -3,7 +3,7 @@ ContainerName=heimdall
 Image=lscr.io/linuxserver/heimdall:latest
 Environment=TZ=America/New_York
 PublishPort={{HOST_PORT}}:80
-Volume={{INSTALL_DIR}}/heimdall/config:/config:Z
+Volume={{INSTALL_DIR}}/heimdall/config:/config:Z,U
 
 [Service]
 Restart=always

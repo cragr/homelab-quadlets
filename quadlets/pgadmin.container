@@ -1,10 +1,10 @@
 [Container]
 ContainerName=npmplus
 Image=docker.io/dpage/pgadmin4:latest
-Volume={{INSTALL_DIR}}/pgadmin/data:/var/lib/pgadmin:Z
+Volume={{INSTALL_DIR}}/pgadmin/data:/var/lib/pgadmin:Z,U
 
 Environment=PGADMIN_DEFAULT_EMAIL=admin@example.com
-Environment=PGADMIN_DEFAULT_PASSWORD=changeMeNow!
+Environment=PGADMIN_DEFAULT_PASSWORD=password
 Environment=PGADMIN_LISTEN_PORT=5050
 
 PublishPort={{HOST_PORT}}:5050
