@@ -1,0 +1,18 @@
+[Container]
+ContainerName=cloudflared
+Image=docker.io/cloudflare/cloudflared:latest
+Network=appnet
+
+# Mount config & credentials
+Volume={{INSTALL_DIR}}/cloudflared:/etc/cloudflared:Z,U
+
+# Run named tunnel from config
+Command=tunnel
+Args=--no-autoupdate run --config /etc/cloudflared/config.yaml
+
+[Service]
+RestartSec=2
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
