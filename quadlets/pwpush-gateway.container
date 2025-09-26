@@ -1,8 +1,8 @@
 [Container]
 ContainerName=pwpush-gateway
-HostName=pwpush-gateway
 Image=docker.io/pglombardo/pwpush-public-gateway:latest
-PublishPort={{HOST_PORT}}:5100
+
+Network=appnet
 
 [Service]
 Restart=always
