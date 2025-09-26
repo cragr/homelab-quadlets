@@ -69,6 +69,9 @@ if [[ $NON_INTERACTIVE -eq 0 ]]; then
 fi
 mkdir -p "$INSTALL_DIR"; chmod 755 "$INSTALL_DIR"
 
+declare -A TOKVAL
+TOKVAL["INSTALL_DIR"]="$INSTALL_DIR"
+
 WORKDIR="$(mktemp -d)"
 cleanup() { rm -rf "$WORKDIR"; }
 trap cleanup EXIT
