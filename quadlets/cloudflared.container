@@ -7,8 +7,7 @@ Network=appnet
 Volume={{INSTALL_DIR}}/cloudflared:/etc/cloudflared:Z,U
 
 # Run named tunnel from config
-Command=tunnel
-Args=--no-autoupdate run --config /etc/cloudflared/config.yaml
+Args=--no-autoupdate tunnel run --config /etc/cloudflared/config.yaml
 
 [Service]
 RestartSec=2
