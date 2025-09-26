@@ -1,5 +1,5 @@
 [Container]
-ContainerName=npmplus
+ContainerName=pgadmin
 Image=docker.io/dpage/pgadmin4:latest
 Volume={{INSTALL_DIR}}/pgadmin/data:/var/lib/pgadmin:Z,U
 
