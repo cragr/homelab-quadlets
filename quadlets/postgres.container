@@ -1,15 +1,14 @@
 [Container]
-ContainerName=postgresql
+ContainerName=postgres
 Image=quay.io/sclorg/postgresql-16-c10s:latest
-Volume={{INSTALL_DIR}}/postgresql/data:/var/lib/pgsql/data:Z
+Volume={{INSTALL_DIR}}/postgresql/data:/var/lib/pgsql/data:Z,U
 PublishPort=5432:5432
 RestartPolicy=always
 
-Environment=POSTGRESQL_USER=appuser
-Environment=POSTGRESQL_PASSWORD=changeMeNow!
-Environment=POSTGRESQL_DATABASE=appdb
+Environment=POSTGRESQL_USER=postgres
+Environment=POSTGRESQL_PASSWORD=postgres
+Environment=POSTGRESQL_DATABASE=postgres
 
-# Healthcheck (simple readiness probe)
 HealthCmd=CMD-SHELL pg_isready -h 127.0.0.1 -U "$${POSTGRESQL_USER:-postgres}" -d "$${POSTGRESQL_DATABASE:-postgres}"
 HealthInterval=10s
 HealthTimeout=5s
