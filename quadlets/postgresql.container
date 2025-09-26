@@ -1,0 +1,26 @@
+[Unit]
+Description=PostgreSQL 16 (sclorg) - rootless
+
+[Container]
+Image=quay.io/sclorg/postgresql-16-c10s:latest
+Volume={{INSTALL_DIR}}/postgresql/data:/var/lib/pgsql/data:Z
+PublishPort=5432:5432
+
+Environment=POSTGRESQL_USER=appuser
+Environment=POSTGRESQL_PASSWORD=changeMeNow!
+Environment=POSTGRESQL_DATABASE=appdb
+
+# Healthcheck (simple readiness probe)
+HealthCmd=CMD-SHELL pg_isready -h 127.0.0.1 -U "$${POSTGRESQL_USER:-postgres}" -d "$${POSTGRESQL_DATABASE:-postgres}"
+HealthInterval=10s
+HealthTimeout=5s
+HealthStartPeriod=20s
+HealthRetries=5
+
+Restart=always
+
+[Service]
+TimeoutStartSec=180
+
+[Install]
+WantedBy=default.target
