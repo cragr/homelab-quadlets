@@ -8,12 +8,12 @@ Environment=POSTGRESQL_USER=admin
 Environment=POSTGRESQL_PASSWORD=postgres
 Environment=POSTGRESQL_DATABASE=default
 
-# Healthcheck (simple readiness probe)
-HealthCmd=CMD-SHELL pg_isready -h 127.0.0.1 -U "$${POSTGRESQL_USER:-postgres}" -d "$${POSTGRESQL_DATABASE:-postgres}"
+# Healthcheck (Quadlet/Podman)
+HealthCmd=["CMD-SHELL","pg_isready"]
 HealthInterval=10s
 HealthTimeout=5s
-HealthStartPeriod=20s
 HealthRetries=5
+HealthStartPeriod=30
 
 [Service]
 TimeoutStartSec=180
