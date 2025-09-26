@@ -1,7 +1,7 @@
 [Container]
 ContainerName=guacamole
-Image=guacamole/guacamole:latest
-PublishPort=8080:8080
+Image=docker.io/guacamole/guacamole:latest
+PublishPort={{HOST_PORT}}:8080
 
 # Point Guacamole at the guacd container by name (same default podman network)
 Environment=GUACD_HOSTNAME=guacd
