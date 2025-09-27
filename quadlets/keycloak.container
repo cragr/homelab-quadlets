@@ -14,7 +14,7 @@ Environment=KC_HOSTNAME_STRICT=false
 
 # Database (PostgreSQL)
 Environment=KC_DB=postgres
-Environment=KC_DB_URL_HOST=postgreql
+Environment=KC_DB_URL_HOST=postgresql
 Environment=KC_DB_URL_PORT=5432
 Environment=KC_DB_URL_DATABASE=keycloak
 Environment=KC_DB_USERNAME=keycloak
