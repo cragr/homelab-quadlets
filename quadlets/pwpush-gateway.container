@@ -1,8 +1,23 @@
 [Container]
 ContainerName=pwpush-gateway
 Image=docker.io/pglombardo/pwpush-public-gateway:latest
-
+Volume={{INSTALL_DIR}}/pwpush/storage:/opt/PasswordPusher/storage:Z,U
 Network=appnet
+
+Environment=DATABASE_URL=postgresql://pwpush_user:pwpush_passwd@postgresql:5432/pwpush_db
+Environment=PWP__ENABLE_LOGINS=true
+Environment=PWP__MAIL__RAISE_DELIVERY_ERRORS=false
+Environment=PWP__HOST_DOMAIN={{PWPUSH_DOMAIN}}
+Environment=PWP__HOST_PROTOCOL=https
+Environment=PWP__ENABLE_FILE_PUSHES=true
+Environment=PWP__FILES__STORAGE=local
+Environment=PWP__FILES__EXPIRE_AFTER_DAYS_DEFAULT=2
+Environment=PWP__FILES__EXPIRE_AFTER_DAYS_MAX=7
+Environment=PWP__FILES__EXPIRE_AFTER_VIEWS_DEFAULT=5
+Environment=PWP__FILES__EXPIRE_AFTER_VIEWS_MAX=10
+Environment=PWP__FILES__RETRIEVAL_STEP_DEFAULT=true
+Environment=PWP__ENABLE_URL_PUSHES=true
+Environment=PWP__DISABLE_SIGNUPS=true
 
 [Service]
 Restart=always
