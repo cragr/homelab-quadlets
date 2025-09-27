@@ -1,6 +1,6 @@
 [Container]
 ContainerName=keycloak
-Image=quay.io/keycloak/keycloak:26.1
+Image=quay.io/keycloak/keycloak:26.3.5
 Network=appnet
 
 # Persist Keycloak data (sessions, themes, etc. still rely on DB for canonical state)
@@ -14,7 +14,7 @@ Environment=KC_HOSTNAME_STRICT=false
 
 # Database (PostgreSQL)
 Environment=KC_DB=postgres
-Environment=KC_DB_URL_HOST=postgres
+Environment=KC_DB_URL_HOST=postgreql
 Environment=KC_DB_URL_PORT=5432
 Environment=KC_DB_URL_DATABASE=keycloak
 Environment=KC_DB_USERNAME=keycloak

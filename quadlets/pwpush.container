@@ -1,8 +1,31 @@
 [Container]
 ContainerName=pwpush
 Image=docker.io/pglombardo/pwpush:latest
-
+Volume={{INSTALL_DIR}}/pwpush/storage:/opt/PasswordPusher/storage:Z,U
 Network=appnet
+
+Environment=DATABASE_URL=postgresql://pwpush_user:pwpush_passwd@postgressl:5432/pwpush_db
+Environment=PWP__ENABLE_LOGINS=true
+Environment=PWP__MAIL__RAISE_DELIVERY_ERRORS=true
+Environment=PWP__MAIL__SMTP_ADDRESS=
+Environment=PWP__MAIL__SMTP_PORT=
+Environment=PWP__MAIL__SMTP_USER_NAME=
+Environment=PWP__MAIL__SMTP_PASSWORD=
+Environment=PWP__MAIL__SMTP_AUTHENTICATION=plain
+Environment=PWP__MAIL__SMTP_STARTTLS=true
+Environment=PWP__MAIL__SMTP_OPEN_TIMEOUT=10
+Environment=PWP__MAIL__SMTP_READ_TIMEOUT=10
+Environment=PWP__HOST_DOMAIN=
+Environment=PWP__HOST_PROTOCOL=https
+Environment=PWP__MAIL__MAILER_SENDER="Sender Name" <email@address.111>
+Environment=PWP__ENABLE_FILE_PUSHES=true
+Environment=PWP__FILES__STORAGE=local
+Environment=PWP__FILES__EXPIRE_AFTER_DAYS_DEFAULT=2
+Environment=PWP__FILES__EXPIRE_AFTER_DAYS_MAX=7
+Environment=PWP__FILES__EXPIRE_AFTER_VIEWS_DEFAULT=5
+Environment=PWP__FILES__EXPIRE_AFTER_VIEWS_MAX=10
+Environment=PWP__FILES__RETRIEVAL_STEP_DEFAULT=true
+Environment=PWP__ENABLE_URL_PUSHES=true
 
 [Service]
 Restart=always
