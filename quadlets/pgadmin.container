@@ -3,8 +3,8 @@ ContainerName=pgadmin
 Image=docker.io/dpage/pgadmin4:latest
 Volume={{INSTALL_DIR}}/pgadmin/data:/var/lib/pgadmin:Z,U
 
-Environment=PGADMIN_DEFAULT_EMAIL={{pgadmin_default_email}}
-Environment=PGADMIN_DEFAULT_PASSWORD={{pgadmin_default_password}}
+Environment=PGADMIN_DEFAULT_EMAIL={{PGADMIN_DEFAULT_EMAIL}}
+Environment=PGADMIN_DEFAULT_PASSWORD={{PGADMIN_DEFAULT_PASSWORD}}
 Environment=PGADMIN_DISABLE_POSTFIX=true
 
 Network=appnet

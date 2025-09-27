@@ -23,7 +23,7 @@ Environment=KC_DB_PASSWORD=keycloak
 
 # Bootstrap admin on first start
 Environment=KEYCLOAK_ADMIN=admin
-Environment=KEYCLOAK_ADMIN_PASSWORD=password
+Environment=KEYCLOAK_ADMIN_PASSWORD={{KEYCLOAK_ADMIN_PASSWORD}}
 
 # Start with explicit flags (recommended)
 Exec=start --http-enabled=true

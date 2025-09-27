@@ -7,8 +7,8 @@ PublishPort=5432:5432
 Network=appnet
 
 Environment=POSTGRESQL_USER=admin
-Environment=POSTGRESQL_PASSWORD={{postgresql_password}}
-Environment=POSTGRESQL_ADMIN_PASSWORD={{postgresql_admin_password}}
+Environment=POSTGRESQL_PASSWORD={{POSTGRESQL_PASSWORD}}
+Environment=POSTGRESQL_ADMIN_PASSWORD={{POSTGRESQL_ADMIN_PASSWORD}}
 Environment=POSTGRESQL_DATABASE=default
 
 # Healthcheck (Quadlet/Podman)
