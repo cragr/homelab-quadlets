@@ -13,7 +13,7 @@ Environment=OPENID_ENABLED=true
 # Enable postgresql
 Environment=POSTGRESQL_ENABLED=true
 
-Environment=POSTGRESQL_HOST=postgresql
+Environment=POSTGRESQL_HOSTNAME=postgresql
 Environment=POSTGRESQL_DATABASE=guacamole_db
 Environment=POSTGRESQL_USERNAME=guacamole_user
 Environment=POSTGRESQL_PASSWORD=password
