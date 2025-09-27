@@ -1,6 +1,7 @@
 [Container]
 ContainerName=guacamole
 Image=docker.io/guacamole/guacamole:1.6.0
+Volume={{INSTALL_DIR}}/guacamole:/etc/guacamole:Z,U
 
 # Point Guacamole at the guacd container by name (same default podman network)
 Environment=GUACD_HOSTNAME=guacd
@@ -17,8 +18,6 @@ Environment=POSTGRESQL_USERNAME=guacamole_user
 Environment=POSTGRESQL_PASSWORD=password
 Environment=WEBAPP_CONTEXT=ROOT
 Environment=REMOTE_IP_VALVE_ENABLED=true
-
-Volume={{INSTALL_DIR}}/guacamole:/etc/guacamole:Z,U
 
 Network=appnet
 
