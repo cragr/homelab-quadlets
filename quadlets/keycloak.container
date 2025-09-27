@@ -4,7 +4,7 @@ Image=quay.io/keycloak/keycloak:26.1
 Network=appnet
 
 # Persist Keycloak data (sessions, themes, etc. still rely on DB for canonical state)
-Volume={{INSTALL_DIR}}keycloak/data:/opt/keycloak/data:Z
+Volume={{INSTALL_DIR}}/keycloak/data:/opt/keycloak/data:Z
 
 # Reverse proxy & hostname (required when running behind Cloudflare/any proxy)
 Environment=KC_PROXY_HEADERS=xforwarded
@@ -26,7 +26,7 @@ Environment=KEYCLOAK_ADMIN=admin
 Environment=KEYCLOAK_ADMIN_PASSWORD=password
 
 # Start with explicit flags (recommended)
-Exec=start --optimized --http-enabled=true --hostname=$(KC_HOSTNAME) --proxy-headers=$(KC_PROXY_HEADERS) --health-enabled=false
+Exec=start --http-enabled=true
 
 [Service]
 Restart=always
