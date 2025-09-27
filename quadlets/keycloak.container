@@ -8,7 +8,7 @@ Volume={{INSTALL_DIR}}/keycloak/data:/opt/keycloak/data:Z,U
 
 # Reverse proxy & hostname (required when running behind Cloudflare/any proxy)
 Environment=KC_PROXY_HEADERS=xforwarded
-Environment=KC_HOSTNAME=auth.example.com
+Environment=KC_HOSTNAME={{KEYCLOAK_URL}}
 Environment=KC_HTTP_ENABLED=true
 Environment=KC_HOSTNAME_STRICT=false
 
